@@ -18,12 +18,12 @@ from sklearn import datasets, svm
 from sklearn.cross_validation import train_test_split
 from sklearn.cross_validation import StratifiedShuffleSplit
 
-sys.path.append("../algorithms")
+sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/" + ".."))
 
-import performance_metrics as pm
-import content_based as cb
-from singleton import SCSingleton
-from timer import Timer
+import metrics.performance_metrics as pm
+import metrics.content_based as cb
+from modules.singleton import SCSingleton
+from modules.timer import Timer
 
 """
 This entire file is to provide a basic understanding of collaborative filtering
