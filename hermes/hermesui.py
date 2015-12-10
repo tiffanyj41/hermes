@@ -55,7 +55,7 @@ def _ask_user_for_split_percentage(datum_json_path):
 	"""
 	print "How do you want to split your data?"
 	print "For example: If you wanted to split the data into "
-	print "60\% training, 40\% test, 0\% validation, seed = 11, please type in:"
+	print "60% training, 40% test, 0% validation, seed = 11, please type in:"
 	print "Percentage for training: 60"
 	print "Percentage for test: 40"
 	print "Percentage for validation: 0"
@@ -94,7 +94,7 @@ def _ask_user_for_split_percentage(datum_json_path):
 					print "Please provide a number from 0 - 100."
 		while True:
 			try:
-				testPercentage = int(raw_input("Precentage for test: ").strip())
+				testPercentage = int(raw_input("Percentage for test: ").strip())
 			except ValueError:
 				print "Please provide a valid number."
 			else:

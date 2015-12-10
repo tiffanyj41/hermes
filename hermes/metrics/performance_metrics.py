@@ -54,7 +54,7 @@ def get_perform_metrics(y_test, y_train, y_predicted, content_array, sqlCtx, num
 
 # RMSE -----------------------------------------------------------------    
 
-def calculate_rmse_using_rdd(y_actual, y_predicted):
+def calculate_rmse(y_actual, y_predicted):
     """
     Determines the Root Mean Square Error of the predictions. 
 
@@ -73,26 +73,11 @@ def calculate_rmse_using_rdd(y_actual, y_predicted):
     sum_ratings_diff_sq = ratings_diff_sq.reduce(add)
     num = ratings_diff_sq.count()
 
-    return sqrt(sum_ratings_diff_sq / float(num) )
-        
-def calculate_rmse_using_array(y_actual, y_predicted):
-    """
-    Determines the Root Mean Square Error of the predictions.
-
-    Args: 
-        y_actual: actual ratings in the format of an array of [ (userId, itemId, actualRating) ]
-        y_predicted: predicted ratings in the format of an array of [ (userId, itemId, predictedRating) ]
-
-    Assumptions:
-        y_actual and y_predicted are in the same order.
-
-    """
-    return sqrt(mean_squared_error(y_actual, y_predicted))
-    #return mean_squared_error(y_actual, y_predicted) ** 0.5
+    return sqrt(sum_ratings_diff_sq / float(num))
 
 # MAE ------------------------------------------------------------------
 
-def calculate_mae_using_rdd(y_actual, y_predicted):
+def calculate_mae(y_actual, y_predicted):
     """
     Determines the Mean Absolute Error of the predictions.
 
