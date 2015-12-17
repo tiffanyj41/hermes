@@ -1,8 +1,16 @@
 import time
 
 class Timer(object):
-    def __init__(self, verbose=False):
-        self.verbose = verbose
+    """ 
+    To time how long a particular function runs.
+
+    Example:
+        import Timer
+        with Timer() as t:
+            somefunction()
+        print("somefunction() takes %s seconds" % t.secs)
+        print("somefunction() takes %s milliseconds" % t.msecs)
+    """
 
     def __enter__(self):
         self.start = time.time()
@@ -12,5 +20,3 @@ class Timer(object):
         self.end = time.time()
         self.secs = self.end - self.start
         self.msecs = self.secs * 1000
-        if self.verbose:
-            print "elapsed time: %f ms" % self.msecs

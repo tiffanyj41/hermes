@@ -1,68 +1,70 @@
-## Hermes Installation Guide
+# Hermes Installation Guide
 
-### Dependencies: 
+## Dependencies: 
 * Spark 1.5.1 
 * Scala 2.11.7
 * Pyspark 0.8.2.1
 * Hadoop 2.7.1
 * virtualenv
 
-### How to Install Dependencies on Mac OS X: 
-#### Installing Spark, Scala, and PySpark 
+## How to Install Dependencies on Mac OS X: 
+### Installing Spark, Scala, and PySpark 
 1. Install Java
   1. Download 
   2. Double click on .dmg file to install.
   3. In a terminal, type java -version. You should see the following: 
-`
+```bash
 java version "1.8.0_65"
 Java(TM) SE Runtime Environment (build 1.8.0_65-b17)
 Java HotSpot(TM) 64-Bit Server VM (build 25.65-b01, mixed mode)
-`
+```
 2. Set JAVA_HOME
+```bash
 export JAVA_HOME=$(/usr/libexec/java_home)
+```
 
 3. Install Homebrew
-`
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
-`
+```bash
+$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
+```
 
 4. Install Scala
-`
-brew install scala
-`
+```
+$ brew install scala
+```
 
 5. Download Spark from https://spark.apache.org/downloads.html. 
 
 6. Set SCALA_HOME and SPARK_HOME and export it to path in your .bash_profile.
-`
+```bash
 export SPARK_HOME=/path/to/your/spark
 export PATH=$PATH:$SPARK_HOME/bin
 export SCALA_HOME=/path/to/your/scala
 export PATH=$PATH:$SCALA_HOME/bin
-`
+```
 
 7. Export PySpark classes to the Python path after you have installed Python.
-`
+```bash
 export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH
-`
+```
 
 8. Build and install Apache Spark
-`
-brew install sbt
-cd $SPARK_HOME
-sbt/sbt clean assembly
-`
+```bash
+$ brew install sbt
+$ cd $SPARK_HOME
+$ sbt/sbt clean assembly
+```
 
-#### Installing Hadoop  
+### Installing Hadoop  
 Please follow this [guide](http://zhongyaonan.com/hadoop-tutorial/setting-up-hadoop-2-6-on-mac-osx-yosemite.html).
 
-#### Installing virtualenv 
+### Installing virtualenv 
 Please read this [guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/) for more details.
-`
-pip install virtualenv
-`
+```bash
+$ pip install virtualenv
+```
 
-### How to Install Hermes: 
+## How to Install Hermes: 
 
 (Optional) After you have installed the dependencies, if you have different projects that require different Python environment, you can use a Virtual Environment. As listed in the Virtual Environment's [site](http://docs.python-guide.org/en/latest/dev/virtualenvs/), "a Virtual Environment is a tool to keep the dependencies required by different projects in separate places, by creating virtual Python environments for them."
 

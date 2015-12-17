@@ -8,7 +8,7 @@ import metrics.performance_metrics as pm
 
 eggsecutor = MetricExecutor(RMSE())
 print eggsecutor.execute(vector)
-eggsecutor.changeAlgorithm(PRFS())
+eggsecutor.change_metric(PRFS())
 print eggsecutor.execute(vector)
 
 """
@@ -32,29 +32,29 @@ class MetricExecutor:
 # ================================================================================
 
 class MetricFactory(object):
-	def create_obj_metric(self, metric_str):
-		which_metric = getattr(sys.modules[__name__], metric_str)
-		if not which_metric:
-			# cannot find class
-			raise ValueError
-		else:
-			return which_metric()
+    def create_obj_metric(self, metric_str):
+        which_metric = getattr(sys.modules[__name__], metric_str)
+        if not which_metric:
+            # cannot find class
+            raise ValueError
+        else:
+            return which_metric()
 
 class Metric:
     def calculate_metric(self, vector=None) : 
-    	pass
+        pass
 
 class RMSE(Metric):
     def calculate_metric(self, vector):
-    	return pm.calculate_rmse(vector.test_vector, vector.prediction_vector)
+        return pm.calculate_rmse(vector.test_vector, vector.prediction_vector)
 
 class MAE(Metric):
-	def calculate_metric(self, vector):
-		return pm.calculate_mae(vector.test_vector, vector.prediction_vector)
+    def calculate_metric(self, vector):
+        return pm.calculate_mae(vector.test_vector, vector.prediction_vector)
         
 class PRFS(Metric):
     def calculate_metric(self):
-        pass
+        raise NotImplemented
 
 
 

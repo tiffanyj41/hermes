@@ -4,6 +4,8 @@ from pyspark import SparkConf, SparkContext
 from pyspark.sql import SQLContext
 
 class SCSingleton(object):
+    """ Wrapper for Spark Context to prevent multiple instantiation of the Spark Context. """
+    
     __instance = None
 
     def __new__(cls, conf):

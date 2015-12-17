@@ -14,7 +14,7 @@ This readme will be updated as the project progresses so stay tuned!
 
 ## Basic Installation Guide 
 
-For a detailed installation guide, please read on [Hermes Installation Guide](https://github.com/Lab41/hermes/tree/master/docs/installation.txt).
+For a detailed installation guide, please read on [Hermes Installation Guide](https://github.com/Lab41/hermes/tree/master/docs/installation.md).
 
 ### Dependencies: 
 * Spark 1.5.1 
@@ -47,6 +47,26 @@ Now, you can just run hermes the binary and it will prompt you with what you wan
 $ hermes
 ```
 
+## How to Run Hermes
+
+NOTE: Next implementation of Hermes will be set up so that it does not use pseudo-distributed mode in a single node cluster.
+
+For a detailed guide on how to run Hermes, please read on [How to Run Hermes](https://github.com/Lab41/hermes/tree/master/docs/run.md) guide.
+
+Hermes requires at least three arguments in order to run properly. 
+* fs_default_ip_addr: IP address of fs.default.name used in HDFS, ie. localhost:9000.
+* list_of_files_config: A configuration file that lists all the json paths referenced by configs.
+* configs: Users can provide an unlimited amount of configuration files that list what datasets to use and which recommender algorithms and metrics to apply to each dataset.
+
+With one configuration file:
+```bash
+$ hermes localhost:9000 ./hermes/configs/list_of_files.ini ./hermes/configs/config1.ini 
+```
+
+With more than one configuration files:
+```bash
+$ hermes localhost:9000 ./hermes/configs/list_of_files.ini ./hermes/configs/config1.ini ./hermes/configs/config2.ini
+```
 
 ## State of Build 
 
