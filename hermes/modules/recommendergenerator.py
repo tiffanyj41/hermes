@@ -42,9 +42,12 @@ class ImplementationInterface(object):
 
 # TODO: ask Anna for the specifics
 class WithTfidf(ImplementationInterface):
+    """
+    # TODO
     def make_prediction_with_cbkmeans(self, vector):
         # create CB with K-means with tf-idf
-        pass
+        raise NotImplemented
+    """
 
 class WithoutTfidf(ImplementationInterface):
     def make_prediction_with_als(self, vector):
@@ -54,10 +57,11 @@ class WithoutTfidf(ImplementationInterface):
         prediction_vector = model.predictAll( vector.test_vector.map( lambda x: (x[0], x[1]) ) ).cache()
         return prediction_vector
 
-
+    """
     def make_prediction_with_cbkmeans(self, vector):
         # create CB with K-means without tf-idf
-        pass
+        raise NotImplemented
+    """
 
 # ================================================================================
 # Bridge: bridge target interface & background implementation

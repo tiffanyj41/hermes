@@ -140,10 +140,10 @@ class WikiContentVector(ContentVector, Wiki):
         self.filtered_content.registerTempTable("wiki_content")
 
     def glove(self):
-        pass
+        raise NotImplemented
 
     def category_map(self):
-        pass
+        raise NotImplemented
 
 # ================================================================================
 # ADD ADDITIONAL UserVector and ContentVector based on a given data

@@ -42,7 +42,7 @@ class MetricFactory(object):
 
 class Metric:
     def calculate_metric(self, vector=None) : 
-        pass
+        raise NotImplemented
 
 class RMSE(Metric):
     def calculate_metric(self, vector):
@@ -53,8 +53,7 @@ class MAE(Metric):
         return pm.calculate_mae(vector.test_vector, vector.prediction_vector)
         
 class PRFS(Metric):
-    def calculate_metric(self):
-        raise NotImplemented
+    pass
 
 
 
