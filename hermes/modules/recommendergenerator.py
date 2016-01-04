@@ -17,7 +17,6 @@ recommender.make_prediction()
 
 """
 
-import logging
 import sys
 import timer
 import pyspark.mllib.recommendation as mllib
@@ -58,6 +57,7 @@ class WithoutTfidf(ImplementationInterface):
         return prediction_vector
 
     """
+    # TODO
     def make_prediction_with_cbkmeans(self, vector):
         # create CB with K-means without tf-idf
         raise NotImplemented

@@ -96,6 +96,7 @@ def make_prediction_state(cargo):
 
     for i in range(0, len(cargo.vectors)):
         for r in cargo.recommenders:
+            if Globals.verbose: Globals.logger.debug("Making recommendation %s on data %s", r, cargo.vectors[i].data.datapath)
             # TODO: implement other implementations, ie. WithTfidf(), etc.
             # default is WithoutTfidf()
             recommender = rg.RecommenderFactory().create_obj_recommender(r, cargo.vectors[i])

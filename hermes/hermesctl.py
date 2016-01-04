@@ -56,8 +56,6 @@ def create_logger(name):
         che = logging.StreamHandler()
         che.setLevel(logging.ERROR)
         # create console handler for stdout for info, debug, and error level
-        choi = logging.StreamHandler(sys.stdout)
-        choi.setLevel(logging.INFO)
         chod = logging.StreamHandler(sys.stdout)
         chod.setLevel(logging.DEBUG)
         choe = logging.StreamHandler(sys.stdout)
@@ -66,13 +64,11 @@ def create_logger(name):
         formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         fh.setFormatter(formatter)
         che.setFormatter(formatter)
-        choi.setFormatter(formatter)
         chod.setFormatter(formatter)
         choe.setFormatter(formatter)
         # add handlers to logger    
         logger.addHandler(fh)
         logger.addHandler(che)
-        logger.addHandler(choi)
         logger.addHandler(chod)
         logger.addHandler(choe)
 
@@ -311,7 +307,7 @@ def main(verbose, hdfs_dir, fs_default_ip_addr, list_of_files_config, configs):
     extract_configs(configs, list_of_files_config, cargo)
 
     # run state machine
-    stateMachine.run(cargo)
+    state_machine.run(cargo)
     
 
 
