@@ -5,7 +5,7 @@ UV_HEADINGS = () + REQ_UV_HEADINGS + ("user_vector_schemas",)
 REQ_CV_HEADINGS = ("content_vector_data", "content_vector_transformations")
 CV_HEADINGS = () + REQ_CV_HEADINGS + ("content_vector_schemas",)
 
-DATASETS_HEADINGS = ("vectorizer",) + UV_HEADINGS + CV_HEADINGS
+DATASETS_HEADINGS = ("dataname",) + UV_HEADINGS + CV_HEADINGS
 
 HEADINGS = { "datasets": DATASETS_HEADINGS, \
              "recommenders": ("recommenders"), \

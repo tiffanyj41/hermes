@@ -12,6 +12,8 @@ This is a glossary of common terms used in Hermes and their specified meaning.
 ## D
 **Dataframe**: A DataFrame is a distributed collection of data organized into named columns. It is conceptually equivalent to a table in a relational database or a data frame in R/Python, but with richer optimizations under the hood. (Excerpt taken from Spark's SQL Programming Guide). In Hermes, the dataframe variable defined in the Data class refers to the dataframe created after reading in the JSON file.
 
+**Dataname**: Dataname is a variable used in configuration file to refer to the data where each JSON file is coming from. 
+
 ## E
 
 ## F
@@ -71,7 +73,7 @@ This is a glossary of common terms used in Hermes and their specified meaning.
 
 **Vector Type**: Hermes separates vectors into two distinct types: User Vector and Content Vector. User Vector refers to the vector describing users in the data. Content Vector refers to the vector describing content in the data. Users can implement other vector types as needed if User Vector and Content Vector does not describe the vector they are building.
 
-**Vectorizer**: Vectorizer is a variable used in configuration file to refer to the data where each JSON file is coming from. 
+**Vectorizer**: see "Dataname". This is a deprecated name used before we decided to stick with "Dataname".
 
 ## W
 

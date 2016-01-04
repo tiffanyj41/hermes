@@ -28,10 +28,10 @@ Before continuing, it might be beneficial if you understand the Hermes's framewo
 
 ### Configuration Files
 For JSON files derived from Movie Lens data, you need to specify the following:
-* In configuration file, specify vectorizer = movielens
+* In configuration file, specify dataname = movielens
 * In configuraiton file that lists all JSON files, specify section as [movielens]
 
-As long as the vectorizer check matches with the vectorizer given in the configuration files, Hermes will recognize it as a Movie Lens data. This check can be found in hermes/hermes/modules/vectorgenerator.py under a class function called isSameDataInstance(). What is checked in isSameDataInstance() has to match the vectorizer exactly. If it did not, Hermes will throw an error message. In this case, vectorizer has to match "movielens" exactly to recognize that this is a Movie Lens data.
+As long as the dataname check matches with the dataname given in the configuration files, Hermes will recognize it as a Movie Lens data. This check can be found in hermes/hermes/modules/vectorgenerator.py under a class function called isSameDataInstance(). What is checked in isSameDataInstance() has to match the dataname exactly. If it did not, Hermes will throw an error message. In this case, dataname has to match "movielens" exactly to recognize that this is a Movie Lens data.
 
 ### Vector Transformation for User Vector
 
@@ -51,10 +51,10 @@ You can specify the vector transformation on a content vector by specifying cont
 
 ### Configuration Files
 For JSON files derived from Wikipedia data, you need to specify the following:
-* In configuration file, specify vectorizer = wiki
+* In configuration file, specify dataname = wiki
 * In configuration file that lists all JSON files, specify section as [wiki]
 
-As long as the vectorizer check matches with the vectorizer given in the configuration files, Hermes will recognize it as a Wikipedia data. This check can be found in hermes/hermes/modules/vectorgenerator.py under a class function called isSameDataInstance(). What is checked in isSameDataInstance() has to match the vectorizer exactly. If it did not, Hermes will throw an error message. In this case, vectorizer has to match "wiki" exactly to recognize that this is a Wikipedia data.
+As long as the dataname check matches with the dataname given in the configuration files, Hermes will recognize it as a Wikipedia data. This check can be found in hermes/hermes/modules/vectorgenerator.py under a class function called isSameDataInstance(). What is checked in isSameDataInstance() has to match the dataname exactly. If it did not, Hermes will throw an error message. In this case, dataname has to match "wiki" exactly to recognize that this is a Wikipedia data.
 
 #### Vector Transformation for User Vector
 
@@ -82,7 +82,7 @@ Template:
 class NewDataset(object):
     @classmethod
     def isSameDataInstance(cls, comparisonData):
-        return comparisonData.vectorizer == "new_dataset_vectorizer_name"
+        return comparisonData.dataname == "new_dataset_dataname_name"
 
 class NewDatasetUserVector(UserVector, NewDataset):
     def user_vector_transformation_1(self):
@@ -108,7 +108,7 @@ class NewDatasetContentVector(ContentVector, NewDataset):
 
 1. Instantiate a class for your dataset. In this case, it is specified as class NewDataset.
 2. Instantiate a User Vector and a Content Vector class for your dataset that inherits from your dataset class and UserVector or Content Vector respectively. In this case, the UserVector for NewDataset is called NewDataSetUserVector, and the ContentVector for NewDataset is called NewDataContentVector. 
-3. Provide the vectorizer name for the check in isSameDataInstance(). In this case, vectorizer is checked if it's equal to "new_dataset_vectorizer_name".
+3. Provide the dataname name for the check in isSameDataInstance(). In this case, dataname is checked if it's equal to "new_dataset_dataname_name".
 4. Provide the vector transformation logic for each type of vectors. For User Vector transformations, define the function in the class NewDatasetUserVector. In this case, these vector transformations are user_vector_transformation_1, user_vector_transformation_2, and user_vector_transformation_n. For Content Vector transformations, define the function in the class NewDatasetContentVector. In this case, the vector transformation is content_vector_trasnformation_1. 
 5. Additional support files needed for the vector transformation is passed down from the configuration file as self.support_files. self.support_files is a dictionary with the key as a variable and the value as the value received in the configuration file. Please read on the [configuration file guide](https://github.com/Lab41/hermes/tree/master/docs/configs.md#optional-variables) for more details.
 
@@ -116,7 +116,7 @@ After you have defined the concrete implementation of the new dataset, you can n
 
 In list_of_files.ini:
 ```bash
-[new_dataset_vectorizer_name]
+[new_dataset_dataname_name]
 new_dataset_10m_ratings = /path/to/your/new/dataset/10m/ratings.json.gz
 new_dataset_20m_ratings = /path/to/your/new/dataset/20m/ratings.json.gz
 new_dataset_10m_ratings_schema = /path/to/your/new/dataset/10m/ratings_schema.json.gz
@@ -129,7 +129,7 @@ new_dataset_10m_movies_schema = /path/to/your/new/dataset/10m/movies_schema.json
 In new_dataset_config.ini:
 ```bash
 [datasets]
-vectorizer = new_dataset_vectorizer_name
+dataname = new_dataset_dataname_name
 
 # user vector
 user_vector_data = ["new_dataset_10m_ratings", "new_dataset_20m_ratings"]

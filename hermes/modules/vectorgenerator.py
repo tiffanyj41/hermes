@@ -70,7 +70,7 @@ class ContentVector(Vector):
 class MovieLens(object):
     @classmethod
     def isSameDataInstance(cls, comparisonData):
-        return comparisonData.vectorizer == "movielens"
+        return comparisonData.dataname == "movielens"
 
 class MovieLensUserVector(UserVector, MovieLens):
     def ratings(self):
@@ -84,7 +84,7 @@ class MovieLensUserVector(UserVector, MovieLens):
 
 class MovieLensContentVector(ContentVector, MovieLens):
     def genre(self):
-        def genre_vectorizer(row):
+        def genre_dataname(row):
             return np.array((
                     int(row.genre_action),
                     int(row.genre_adventure),
@@ -105,7 +105,7 @@ class MovieLensContentVector(ContentVector, MovieLens):
                     int(row.genre_war),
                     int(row.genre_western),
                 ))
-        return self.data.dataframe.map(lambda row: (row.movie_id, genre_vectorizer(row)))
+        return self.data.dataframe.map(lambda row: (row.movie_id, genre_dataname(row)))
 
 # ================================================================================
 # Wiki
@@ -115,7 +115,7 @@ class MovieLensContentVector(ContentVector, MovieLens):
 class Wiki(object):
     @classmethod
     def isSameDataInstance(cls, comparisonData):
-        return comparisonData.vectorizer == "wiki"
+        return comparisonData.dataname == "wiki"
 
 class WikiUserVector(UserVector, Wiki):
     def __init__(self):

@@ -1,11 +1,11 @@
 # Hermes's Configuration Files Explained
 
 * [List of Files Standard](#list-of-files-standard)
-  * [Vectorizer](#vectorizer)
+  * [Dataname](#dataname)
   * [JSON Paths](#json-paths)
 * [Configuration File Standard](#configuration-file-standard)
   * [Datasets](#datasets)
-    * [Vectorizer](#vectorizer)
+    * [Dataname](#dataname)
     * [Vectors](#vectors)    
     * [Optional Variables: Schemas & Support Files](#optional-variables)
 * [Recommenders](#recommenders)
@@ -58,17 +58,17 @@ movielens_1m_tags_schema = /path/to/your/movielens/1m/tags.json_schema.gz
 movielens_1m_movies_schema = /path/to/your/movielens/1m/movies_schema.json.gz
 ```
 
-### Vectorizer
+### Dataname
 
-A single data can be split into multiple JSON files. In this case, [movielens] is a data that is split into multiple JSON files. For lack of a better term, we call [movielens] a "vectorizer" variable. There can be multiple vectorizers in a list of files (ie. list_of_files.ini), but there can only be one vectorizer in a configuration file (ie. config.ini). 
+A single data can be split into multiple JSON files. In this case, [movielens] is a data that is split into multiple JSON files. For lack of a better term, we call [movielens] a "dataname" variable. There can be multiple datanames in a list of files (ie. list_of_files.ini), but there can only be one dataname in a configuration file (ie. config.ini). 
 
-Vectorizer plays an important role in that we know which data each JSON file is coming from. This check can be found in hermes/hermes/modules/vectorgenerator.py under a class function called isSameDataInstance() for each data instantiated class. What is checked in isSameDataInstance() has to match the vectorizer exactly. If it did not, Hermes will throw an error message. 
+Dataname plays an important role in that we know which data each JSON file is coming from. This check can be found in hermes/hermes/modules/vectorgenerator.py under a class function called isSameDataInstance() for each data instantiated class. What is checked in isSameDataInstance() has to match the dataname exactly. If it did not, Hermes will throw an error message. 
 
-For example, in the case of the Movie Lens data, its vectorizer is "movielens". The check in the class MovieLens's isSameDataInstance() function will check that vectorizer is equal to "movielens". If you passed [MovieLens] to list_of_files.ini, for example, and the check in isSameDataInstance() is "movielens", it will fail. However, if you passed [movielens] to list_of_files.ini and the check in isSameDataInstance() is "movielens", it will pass.  
+For example, in the case of the Movie Lens data, its dataname is "movielens". The check in the class MovieLens's isSameDataInstance() function will check that dataname is equal to "movielens". If you passed [MovieLens] to list_of_files.ini, for example, and the check in isSameDataInstance() is "movielens", it will fail. However, if you passed [movielens] to list_of_files.ini and the check in isSameDataInstance() is "movielens", it will pass.  
 
 ### JSON Paths
 
-Underneath the vectorizer heading, each variable (ie. movielens_20m_ratings, movielens_20m_tags, etc.) is a shorthand name for a specific JSON file. These variables will store the path to their individual JSON file. They will be used in the configuration file (ie. config.ini) as input to user_vector_data and content_vector_data variable. 
+Underneath the dataname heading, each variable (ie. movielens_20m_ratings, movielens_20m_tags, etc.) is a shorthand name for a specific JSON file. These variables will store the path to their individual JSON file. They will be used in the configuration file (ie. config.ini) as input to user_vector_data and content_vector_data variable. 
 
 ## Configuration File Standard
 
@@ -82,7 +82,7 @@ Let's take a look at an example file called config.ini.
 
 ```bash
 [datasets]
-vectorizer = movielens
+dataname = movielens
 
 # user vector
 user_vector_data = ["movielens_10m_ratings", "movielens_20m_ratings"]
@@ -104,11 +104,11 @@ metrics = ["RMSE", "MAE"]
 
 ### Datasets
 
-Datasets specify which data we are going to use. It contains vectorizer, user or content vectors, and support files.
+Datasets specify which data we are going to use. It contains dataname, user or content vectors, and support files.
 
-#### Vectorizer  
+#### Dataname  
 
-One configuration file can specify only one vectorizer. Vectorizer is the name of the data where each JSON file is derived from. 
+One configuration file can specify only one dataname. Dataname is the name of the data where each JSON file is derived from. 
 
 #### Vectors
 

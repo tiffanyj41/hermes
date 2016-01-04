@@ -134,32 +134,32 @@ def extract_configs(configs_path, list_of_files_config_path, cargo):
         """ Helper function that handles [datasets] section. """
         # TODO: which is better? iterating through sections then items or iterating through just items of list_of_files_config?
         
-        # make sure vectorizer is initialized in order to verify the section in list_of_files_config
-        if not ("vectorizer" in datasets_items.keys()):
-            Globals.logger.error("ERROR: config " + config_path + " must have vectorizer specified.")
+        # make sure dataname is initialized in order to verify the section in list_of_files_config
+        if not ("dataname" in datasets_items.keys()):
+            Globals.logger.error("ERROR: config " + config_path + " must have dataname specified.")
             sys.exit()
 
-        vectorizer = datasets_items["vectorizer"]
-        lofmap = config.map_section(lofcp, vectorizer)
+        dataname = datasets_items["dataname"]
+        lofmap = config.map_section(lofcp, dataname)
 
         # create UserVectorData or ContentVectorData or both
         hasUserVector = False
         # check it has the required items to build a UserVectorData
         if set(config.REQ_UV_HEADINGS) < set(datasets_items.keys()): 
             hasUserVector = True
-            create_datas(lofmap, vectorizer, datasets_items, config_path, isUserVector=True)
+            create_datas(lofmap, dataname, datasets_items, config_path, isUserVector=True)
 
         hasContentVector = False 
         # check it has the required items to build a ContentVectorData
         if set(config.REQ_CV_HEADINGS) < set(datasets_items.keys()):
             hasContentVector = True
-            create_datas(lofmap, vectorizer, datasets_items, config_path, isUserVector=False)
+            create_datas(lofmap, dataname, datasets_items, config_path, isUserVector=False)
 
         if not hasUserVector and not hasContentVector:
             Globals.logger.error("ERROR: config " + config_path + " does not have declaration for a user vector or a content vector")
             sys.exit()  
 
-    def create_datas(lofmap, vectorizer, datasets_items, config_path, isUserVector):
+    def create_datas(lofmap, dataname, datasets_items, config_path, isUserVector):
         """ Helper function that creates a UserVectorData or ContentVectorData depending if it isUserVector or not. 
             
         Storing configuration for UserVector or ContentVector in an object (like UserVectorData and ContentVectorData)
@@ -205,10 +205,10 @@ def extract_configs(configs_path, list_of_files_config_path, cargo):
                 schemapath = None
 
             if isUserVector: 
-                uservectordata = UserVectorData(datapath, vector_transformation, schemapath, vectorizer)
+                uservectordata = UserVectorData(datapath, vector_transformation, schemapath, dataname)
                 cargo.datas.append(uservectordata)
             else:
-                contentvectordata = ContentVectorData(datapath, vector_transformation, schemapath, vectorizer)
+                contentvectordata = ContentVectorData(datapath, vector_transformation, schemapath, dataname)
                 cargo.datas.append(contentvectordata)
 
     # extract configs

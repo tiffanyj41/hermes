@@ -117,7 +117,7 @@ We employ the logging library to log INFO, DEBUG, and ERROR messages. The logger
 
 All INFO messages are outputted to the command line.
 
-ALL DEBUG messages are outputted to the command line and a log file called hermes.log. hermes.log is created wherever the hermes binary is run. Debug messages will only print when the --verbose option is passed.
+ALL DEBUG messages are outputted to the command line and a log file called hermes.log. hermes.log is created whenever the hermes binary is run. Debug messages will only print when the --verbose option is passed.
 
 ALL ERROR messages are outputted to the command line and stderr.
 
@@ -149,6 +149,8 @@ To add an end state, add the following line in hermesctl's add_states():
 state_machine.add_state(hermes.new_state, isEndState=True)
 ```
 
+Make sure you define your state as well; otherwise, the framework will output an error. Please follow the instructions in [Defining a New State](#defining-a-new-state). 
+
 #### Adding New Variables in Cargo
 
 Cargo is the object passed around in the state machine. Since we can never know until runtime where each state has derived from and where it will go next, we do not know what parameters to pass into each state. Cargo encapsulates all the parameters needed for each state in one object. It is defined in [cargo.py](#cargopy) and instantiated in hermesctl's main(). Future implementation will clean up Cargo so that one state does not know what another state's parameter needs are unless necessary (TODO: in development).
@@ -163,7 +165,7 @@ Configuration Files are currently extracted via the ConfigParser library. In the
 
 Listed below are recognized sections and their respective items:
 * datasets
-  * vectorizer
+  * dataname
   * user_vector_data
   * user_vector_transformations
   * user_vector_schemas
@@ -177,7 +179,7 @@ Listed below are recognized sections and their respective items:
 
 What Hermes will do when it encounters unrecognized section or section's item:
 * If it does not recognize the section, it will skip the entire section.
-* In datasets section, if vectorizer is not specified, it will quit the program.
+* In datasets section, if dataname is not specified, it will quit the program.
 * In datasets section, if User Vector (user_vector_data, user_vector_transformation) or Content Vector (content_vector_data, content_vector_transformation) or both are not specified, it will quit the program. In the future, it will also quit the program if it does not have User Vector and Content Vector specified when Content Vector is already specified (TODO: in development).
 * Any other items in datasets that are not recognized are treated as a support_file item, meaning the variable is placed as a key and its value is placed as a value in a dictionary called support_files to be used later when generating the vector.
 * In recommenders section, any items that are not recognized will be skipped. In the future, extra parameter variables needed for recommender system algorithms will be recognized (TODO: in development).
@@ -331,7 +333,7 @@ Every vector type inherits from the Vector class, meaning all User Vector and Co
 
 Since each data requires its own specific vector transformation, every data has its own class as well as its own UserVector and ContentVector. The data's UserVector and ContentVector inherit from both the data's own class as well as UserVector or ContentVector respectively. The data's UserVector and ContentVector have functions defined in their class to execute vector transformation. The name of these functions has to match the name of the vector transformation passed in via the configuration file in order for the vector transformation to occur. 
 
-Vectorizer is a variable used in configuration file to refer to the data where each JSON file is coming from. The data's own class has a check function called isSameDataInstance() to verify that the vectorizer passed in via the configuration file is describing about the same data as data's own class.
+Vectorizer is a variable used in configuration file to refer to the data where each JSON file is coming from. The data's own class has a check function called isSameDataInstance() to verify that the dataname passed in via the configuration file is describing about the same data as data's own class.
 
 To automatically create a vector (ie. which vector type and from which data), VectorFactory is there to the rescue! It can either return a Vector object or the RDD / vector itself by calling VectorFactory().create_obj_vector(...) or VectorFactory().create_vector(...) respectively.
 
@@ -357,7 +359,7 @@ For example: if you wanted to create a vector transformation for MovieLens data'
 class MovieLens(object):
     @classmethod
     def isSameDataInstance(cls, comparisonData):
-        return comparisonData.vectorizer == "movielens"
+        return comparisonData.dataname == "movielens"
 
 class MovieLensUserVector(UserVector, MovieLens):
     def ratings(self):

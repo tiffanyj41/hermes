@@ -5,10 +5,10 @@ import vectorgenerator # TODO: avoid this?
 class Data(object):
     """ Store configuration from configuration files. """
 
-    def __init__(self, datapath, vector_transformation, schemapath, vectorizer):
+    def __init__(self, datapath, vector_transformation, schemapath, dataname):
         if helper.is_filepath_valid(datapath): 
             self.datapath = datapath
-        self.vectorizer = vectorizer
+        self.dataname = dataname
         self.vector_transformation = vector_transformation
         self.schema = helper.get_schema(schemapath) 
         self.dataframe = None
@@ -26,13 +26,13 @@ class Data(object):
             self.schema = self.dataframe.schema
 
 class UserVectorData(Data):
-    def __init__(self, datapath, vector_transformation, schemapath, vectorizer):
-        super(self.__class__, self).__init__(datapath, vector_transformation, schemapath, vectorizer)
+    def __init__(self, datapath, vector_transformation, schemapath, dataname):
+        super(self.__class__, self).__init__(datapath, vector_transformation, schemapath, dataname)
         self.which_vector = vectorgenerator.UserVector
 
 class ContentVectorData(Data):
-    def __init__(self, datapath, vector_transformation, schemapath, vectorizer):
-        super(self.__class__, self).__init__(datapath, vector_transformation, schemapath, vectorizer)
+    def __init__(self, datapath, vector_transformation, schemapath, dataname):
+        super(self.__class__, self).__init__(datapath, vector_transformation, schemapath, dataname)
         self.which_vector = vectorgenerator.ContentVector
 
 
