@@ -7,6 +7,8 @@ This is a glossary of common terms used in Hermes and their specified meaning.
 ## B
 
 ## C
+**Cargo**: Cargo is the object passed around in the state machine. Since we can never know until runtime where each state has derived from and where it will go next, we do not know what parameters to pass into each state. Cargo encapsulates all the parameters needed for each state in one object. It is defined in cargo.py and instantiated in hermesctl's main().
+
 **Content Vector**: Content Vector refers to the vector describing the content in the data.
 
 ## D

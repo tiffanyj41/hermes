@@ -74,6 +74,8 @@ You can specify the vector transformation on a content vector by specifying cont
 
 ## Adding New Datasets
 
+This excerpt is taken out from [Understanding Hermes's Framework](https://github.com/Lab41/hermes/tree/master/docs/framework.md#adding-new-datasets).
+
 Currently, adding new dataset will require you to append the logic (see template below) in hermes/hermes/modules/vectorgenerator.py. To make it easier for the user, in the future, every time you add a new dataset, you will need to create a new file. The template for supporting an additional dataset is shown below.
 
 Template: 

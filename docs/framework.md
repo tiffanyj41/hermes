@@ -75,11 +75,11 @@ Reading this entire article will give you the complete understanding of what the
   * [Handling Multiple Next States](#handling-multiple-next-states)  
 * If you are planning to use your own dataset not yet supported by Hermes, please read:
   * [Understanding What Vectors Are](#understanding-what-vectors-are) 
-  * [Datasets Supported](https://github.com/Lab41/hermes/tree/master/docs/data_supported.md), in particular Adding New Datasets section.
+  * [Datasets Supported](https://github.com/Lab41/hermes/tree/master/docs/data_supported.md), in particular [Adding New Dataset](#adding-new-dataset).
 * If you are planning to use your own recommender system algorithms not yet supported by Hermes, please read:
-  * [Recommender System Algorithms Supported](https://github.com/Lab41/hermes/tree/master/docs/recommenders_supported.md), in particular Adding New Recommender System Algorithm section.
+  * [Recommender System Algorithms Supported](https://github.com/Lab41/hermes/tree/master/docs/recommenders_supported.md), in particular [Adding New Recommender System Algorithms](#adding-new-recommender-system-algorithms).
 * If you are planning to use your own metrics not yet supported by Hermes, please read:
-  * [Metrics Supported](https://github.com/Lab41/hermes/tree/master/docs/metrics_supported.md), in particular Adding New Metric section.
+  * [Metrics Supported](https://github.com/Lab41/hermes/tree/master/docs/metrics_supported.md), in particular [Adding New Metric](#adding-new-metric).
 
 ## Main Components
 
@@ -333,7 +333,7 @@ Every vector type inherits from the Vector class, meaning all User Vector and Co
 
 Since each data requires its own specific vector transformation, every data has its own class as well as its own UserVector and ContentVector. The data's UserVector and ContentVector inherit from both the data's own class as well as UserVector or ContentVector respectively. The data's UserVector and ContentVector have functions defined in their class to execute vector transformation. The name of these functions has to match the name of the vector transformation passed in via the configuration file in order for the vector transformation to occur. 
 
-Vectorizer is a variable used in configuration file to refer to the data where each JSON file is coming from. The data's own class has a check function called isSameDataInstance() to verify that the dataname passed in via the configuration file is describing about the same data as data's own class.
+Dataname is a variable used in configuration file to refer to the data where each JSON file is coming from. The data's own class has a check function called isSameDataInstance() to verify that the dataname passed in via the configuration file is describing about the same data as data's own class.
 
 To automatically create a vector (ie. which vector type and from which data), VectorFactory is there to the rescue! It can either return a Vector object or the RDD / vector itself by calling VectorFactory().create_obj_vector(...) or VectorFactory().create_vector(...) respectively.
 
@@ -348,7 +348,96 @@ class MyNewVectorType(Vector):
 
 #### Adding New Dataset
 
-Please read [Datasets Supported's section on Adding New Datasets](https://github.com/Lab41/hermes/tree/master/docs/data_supported.md#adding-new-datasets).
+Same explanation can be found in [Datasets Supported's section on Adding New Datasets](https://github.com/Lab41/hermes/tree/master/docs/data_supported.md#adding-new-datasets).
+
+Currently, adding new dataset will require you to append the logic (see template below) in hermes/hermes/modules/vectorgenerator.py. To make it easier for the user, in the future, every time you add a new dataset, you will need to create a new file. The template for supporting an additional dataset is shown below.
+
+Template: 
+
+```bash
+class NewDataset(object):
+    @classmethod
+    def isSameDataInstance(cls, comparisonData):
+        return comparisonData.dataname == "new_dataset_dataname_name"
+
+class NewDatasetUserVector(UserVector, NewDataset):
+    def user_vector_transformation_1(self):
+        return self.data.dataframe.map(lambda row: (row.user_id, row.movie_id, row.rating))
+
+    def user_vector_transformation_2(self):
+        return self.data.dataframe.map(lambda row: (row.user_id, row.movie_id, row.rating)).filter(lambda (u, m, r): r > 3)
+
+    def user_vector_transformation_n(self):
+        return self.data.dataframe.map(lambda row: (row.user_id, row.movie_id, -1 if row.rating < 3 else 1))
+
+class NewDatasetContentVector(ContentVector, NewDataset):
+    def content_vector_transformation_1(self):
+        def internal_helper_function(row):
+            return np.array((
+                int(row.genre_action),
+                int(row.genre_adventure),
+                int(row.genre_animation),
+            ))
+        return self.data.dataframe.map(lambda row: (row.movie_id, internal_helper_function(row)))
+
+```
+
+1. Instantiate a class for your dataset. In this case, it is specified as class NewDataset.
+2. Instantiate a User Vector and a Content Vector class for your dataset that inherits from your dataset class and UserVector or Content Vector respectively. In this case, the UserVector for NewDataset is called NewDataSetUserVector, and the ContentVector for NewDataset is called NewDataContentVector. 
+3. Provide the dataname name for the check in isSameDataInstance(). In this case, dataname is checked if it's equal to "new_dataset_dataname_name".
+4. Provide the vector transformation logic for each type of vectors. For User Vector transformations, define the function in the class NewDatasetUserVector. In this case, these vector transformations are user_vector_transformation_1, user_vector_transformation_2, and user_vector_transformation_n. For Content Vector transformations, define the function in the class NewDatasetContentVector. In this case, the vector transformation is content_vector_trasnformation_1. 
+5. Additional support files needed for the vector transformation is passed down from the configuration file as self.support_files. self.support_files is a dictionary with the key as a variable and the value as the value received in the configuration file. Please read on the [configuration file guide](https://github.com/Lab41/hermes/tree/master/docs/configs.md#optional-variables) for more details.
+
+After you have defined the concrete implementation of the new dataset, you can now use the dataset and apply multiple recommender system algorithms and metrics.
+
+In list_of_files.ini:
+```bash
+[new_dataset_dataname_name]
+new_dataset_10m_ratings = /path/to/your/new/dataset/10m/ratings.json.gz
+new_dataset_20m_ratings = /path/to/your/new/dataset/20m/ratings.json.gz
+new_dataset_10m_ratings_schema = /path/to/your/new/dataset/10m/ratings_schema.json.gz
+new_dataset_20m_ratings_schema = /path/to/your/new/dataset/20m/ratings_schema.json.gz
+
+new_dataset_10m_movies = /path/to/your/new/dataset/10m/movies.json.gz
+new_dataset_10m_movies_schema = /path/to/your/new/dataset/10m/movies_schema.json.gz
+```
+
+In new_dataset_config.ini:
+```bash
+[datasets]
+dataname = new_dataset_dataname_name
+
+# user vector
+user_vector_data = ["new_dataset_10m_ratings", "new_dataset_20m_ratings"]
+user_vector_schemas = ["new_dataset_10m_ratings_schema", "new_dataset_20m_ratings_schema"]
+user_vector_transformations = ["user_vector_transformation_1", "user_vector_transformation_2"]
+
+# content vector
+content_vector_data = ["new_dataset_10m_movies"]
+content_vector_schema = ["new_dataset_10m_movies_schema"]
+content_vector_transformations = ["content_vector_trasnformation_1"]
+
+[recommenders]
+user_recommenders = ["ALS"]
+content_recommenders = ["CBWithKMeans"]
+
+[metrics]
+metrics = ["RMSE", "MAE"]
+```
+
+When you run hermes with the above configuration, the following will happen:
+* user_vector_transformation_1 will be applied to new_dataset_10m_ratings.
+* user_vector_transformation_2 will be applied to new_dataset_20m_ratings.
+* content_vector_transformation_1 will be applied to new_dataset_10m_movies.
+* ALS will be applied to UserVector of new_dataset_10m_ratings.
+* ALS will be applied to UserVector of new_dataset_20m_ratings.
+* CBWithKMeans will be applied to ContentVector of new_dataset_10m_movies.
+* RMSE will be applied to UserVector of new_dataset_10m_ratings after ALS has been subjected to it.
+* RMSE will be applied to UserVector of new_dataset_20m_ratings after ALS has been subjected to it.
+* RMSE will be applied to ContentVector of new_dataset_10m_ratings after CBWithKMeans has been subjected to it.
+* MAE will be applied to UserVector of new_dataset_10m_ratings after ALS has been subjected to it.
+* MAE will be applied to UserVector of new_dataset_20m_ratings after ALS has been subjected to it.
+* MAE will be applied to ContentVector of new_dataset_10m_ratings after CBWithKMeans has been subjected to it.
 
 #### Adding New Vector Transformation
 
@@ -409,6 +498,8 @@ prediction_vector = recommender.make_prediction()
 ```
 
 #### Adding New Recommender System Algorithms
+
+Same explanation can be found in [Recommenders Supported's section on Adding New Recommender System Algorithms](https://github.com/Lab41/hermes/tree/master/docs/recommenders_supported.md#adding-new-recommender-system-algorithms).
 
 To add a new recommender system algorithm, instantiate a class that inherits from Recommender class and defines the make_prediction() function that calls on the recommender system algorithm's own make prediction function. 
 
@@ -508,6 +599,8 @@ print exeggutor.execute(vector2)
 MetricFactory() is a class that will automatically instantiate which metric dependent on what is specified in the configuration file.
 
 #### Adding New Metric
+
+Same explanation can be found in [Metrics Supported's section on Adding New Metric](https://github.com/Lab41/hermes/tree/master/docs/metrics_supported.md#adding-new-metric).
 
 To add a new metric, create a class that inherits from the Metric class and define a calculate_metric function in the class.
 
