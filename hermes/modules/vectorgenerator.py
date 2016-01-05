@@ -84,7 +84,7 @@ class MovieLensUserVector(UserVector, MovieLens):
 
 class MovieLensContentVector(ContentVector, MovieLens):
     def genre(self):
-        def genre_dataname(row):
+        def get_genre(row):
             return np.array((
                     int(row.genre_action),
                     int(row.genre_adventure),
@@ -105,7 +105,7 @@ class MovieLensContentVector(ContentVector, MovieLens):
                     int(row.genre_war),
                     int(row.genre_western),
                 ))
-        return self.data.dataframe.map(lambda row: (row.movie_id, genre_dataname(row)))
+        return self.data.dataframe.map(lambda row: (row.movie_id, get_genre(row)))
 
 # ================================================================================
 # Wiki
