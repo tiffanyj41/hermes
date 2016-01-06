@@ -69,6 +69,8 @@ Details of what each state does is explained in [hermes.py](#hermespy).
 Reading this entire article will give you the complete understanding of what the framework does. But if you wanted a TL;DR version, please check out the following:
 * If you do not know a particular term used in Hermes, please check out the glossary:
   * [Glossary](https://github.com/Lab41/hermes/tree/master/docs/glossary.md)
+* Understand the assumptions made 
+  * [Assumptions](https://github.com/Lab41/hermes/tree/master/docs/assumptions.md)
 * If you are planning to change the flow of the state machine, please read:
   * [Adding New States in State Machine](#adding-new-states-in-state-machine)
   * [Defining a New State](#defining-a-new-state)

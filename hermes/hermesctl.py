@@ -13,7 +13,7 @@ import modules.config as config
 
 from modules.cargo import Cargo
 from modules.data import UserVectorData, ContentVectorData
-from modules.globals import Globals
+from modules.hermesglobals import Globals
 from modules.singleton import SCSingleton
 from modules.statemachine import StateMachine
 

@@ -21,7 +21,7 @@ import sys
 import timer
 import pyspark.mllib.recommendation as mllib
 
-from modules.globals import Globals
+from hermesglobals import Globals
 
 # ================================================================================
 # Background implementation interface

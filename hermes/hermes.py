@@ -9,7 +9,7 @@ import modules.metricgenerator as mg
 import modules.recommendergenerator as rg
 import modules.vectorgenerator as vg
 
-from modules.globals import Globals
+from modules.hermesglobals import Globals
 from modules.timer import Timer
 
 # TODO: empty certain items in cargo after no longer needed? 

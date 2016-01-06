@@ -1,4 +1,4 @@
-import helper
+import helper 
 import vectorgenerator # TODO: avoid this?
 
 # TODO: a better way of storing configuration from configuration file?
