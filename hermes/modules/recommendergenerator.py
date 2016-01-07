@@ -19,56 +19,18 @@ recommender.make_prediction()
 
 import sys
 import timer
-import pyspark.mllib.recommendation as mllib
+
+import helper
 
 from hermesglobals import Globals
-
-# ================================================================================
-# Background implementation interface
-# ================================================================================
-
-class ImplementationInterface(object):
-    def make_prediction_with_als(self):
-        raise NotImplemented
-
-    def make_prediction_with_cbkmeans(self):
-        raise NotImplemented
-
-
-# ================================================================================
-# Concrete background implementations
-# ================================================================================
-
-# TODO: ask Anna for the specifics
-class WithTfidf(ImplementationInterface):
-    """
-    # TODO
-    def make_prediction_with_cbkmeans(self, vector):
-        # create CB with K-means with tf-idf
-        raise NotImplemented
-    """
-
-class WithoutTfidf(ImplementationInterface):
-    def make_prediction_with_als(self, vector):
-        # create ALS model without tf-idf
-        # TODO: specify rank based on what the user wants
-        model = mllib.ALS.train(vector.training_vector, rank=3)
-        prediction_vector = model.predictAll( vector.test_vector.map( lambda x: (x[0], x[1]) ) ).cache()
-        return prediction_vector
-
-    """
-    # TODO
-    def make_prediction_with_cbkmeans(self, vector):
-        # create CB with K-means without tf-idf
-        raise NotImplemented
-    """
+from rg.default_rg import Default
 
 # ================================================================================
 # Bridge: bridge target interface & background implementation
 # ================================================================================
 
 class Recommender(object):
-    def __init__(self, vector, implementation=WithoutTfidf()):
+    def __init__(self, vector, implementation=Default()):
         self.vector = vector
         self.implementation = implementation
 
@@ -81,7 +43,7 @@ class Recommender(object):
 # ================================================================================
 
 class RecommenderFactory(object):
-    def create_obj_recommender(self, recommender_str, vector, implementation=WithoutTfidf()):
+    def create_obj_recommender(self, recommender_str, vector, implementation=Default()):
         which_recommender = getattr(sys.modules[__name__], recommender_str)
         if not which_recommender:
             # cannot find class

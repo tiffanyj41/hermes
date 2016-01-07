@@ -17,9 +17,9 @@ class Globals(object):
 
     class Constants(object):
         def __init__(self):
-            self.DIR_VECTORS_PATH = os.path.dirname(os.path.realpath(__file__)) + "/" + "vectors"
-            self.DIR_RECOMMENDERS_PATH = os.path.dirname(os.path.realpath(__file__)) + "/" + "recommenders"
-            self.DIR_METRICS_PATH = os.path.dirname(os.path.realpath(__file__)) + "/" + "metrics"
+            self.DIR_VECTORS_PATH = os.path.dirname(os.path.realpath(__file__)) + "/" + "vg"
+            self.DIR_RECOMMENDERS_PATH = os.path.dirname(os.path.realpath(__file__)) + "/" + "rg"
+            self.DIR_METRICS_PATH = os.path.dirname(os.path.realpath(__file__)) + "/" + "mg"
 
         def __setattr__(self, attr, value):
             if hasattr(self, attr):
