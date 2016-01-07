@@ -1,8 +1,8 @@
 from interface import ImplementationInterface
 
 # ================================================================================
-# Concrete background implementations
+# Concrete background implementations for use cases with tf-idf
 # ================================================================================
 
-class WithoutTfidf(ImplementationInterface):
+class WithTfidf(ImplementationInterface):
     pass

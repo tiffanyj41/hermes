@@ -23,7 +23,7 @@ import timer
 import helper
 
 from hermesglobals import Globals
-from rg.default_rg import Default
+from rg.default_usecase import Default
 
 # ================================================================================
 # Bridge: bridge target interface & background implementation

@@ -3,7 +3,7 @@ from interface import ImplementationInterface
 import pyspark.mllib.recommendation as mllib
 
 # ================================================================================
-# Concrete background implementations
+# Concrete background implementations for default use cases
 # ================================================================================
 
 class Default(ImplementationInterface):
