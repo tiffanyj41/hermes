@@ -22,7 +22,9 @@ class Cargo(object):
         self.datas = []     # used until json_to_rdd_state
         self.vectors = []   # used until develop_model_state
         self.support_files = {}
-        self.recommenders = []
+        # TODO: clean up so that there is only recommenders...and not user_recommenders & content_recommenders
+        self.user_recommenders = []
+        self.content_recommenders = []
         self.metrics = []
         self.error_msg = ""
 

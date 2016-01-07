@@ -46,6 +46,27 @@ def load_modules_in_dir(dir_path):
         Globals.logger.error(err, exc_info=True)
         raise
 
+# check whether checkcls is the cls or direct subclass of cls
+def is_direct_subclass(obj, cls):
+    # 1. make sure that checkcls is a class object
+    checkcls = obj
+    if not inspect.isclass(obj):
+        checkcls = obj.__class__
+    # 2. check if checkcls == cls; if it is, return True
+    # 3. check if cls is a direct parent of checkcls
+    return type(checkcls) == type(cls) or cls in checkcls.__bases__ 
+
+# check whether checkcls it the cls or non-direct subclass of cls
+def is_non_direct_subclass(checkcls, cls):
+    # 1. make sure that checkcls is a class object
+    checkcls = obj
+    if not inspect.isclass(obj):
+        checkcls = obj.__class__
+    # 2. check if checkcls == cls; if it is, return True
+    # 3. check if checkcls ia  subclass of cls
+    return type(checkcls) == type(cls) or issubclass(checkcls, cls) 
+
+
 # return generator of direct descendants
 def get_direct_subclasses(module, cls):
     try:

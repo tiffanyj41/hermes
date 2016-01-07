@@ -5,6 +5,7 @@ import logging
 import os
 
 import hermesui
+import modules.helper as helper
 import modules.metricgenerator as mg
 import modules.recommendergenerator as rg
 import modules.vectorgenerator as vg
@@ -95,16 +96,31 @@ def make_prediction_state(cargo):
     if Globals.verbose: Globals.logger.debug("In make_prediction_state:")   
 
     for i in range(0, len(cargo.vectors)):
-        for r in cargo.recommenders:
-            if Globals.verbose: Globals.logger.debug("Making recommendation %s on data %s", r, cargo.vectors[i].data.datapath)
-            # TODO: implement other implementations, ie. WithTfidf(), etc.
-            # default is WithoutTfidf()
-            recommender = rg.RecommenderFactory().create_obj_recommender(r, cargo.vectors[i])
+        thisvector = cargo.vectors[i]
+
+        # select which recommenders based on the vector type
+        recommenders = None
+        if helper.is_direct_subclass(thisvector, vg.UserVector):
+            if Globals.verbose: Globals.logger.debug("Iterating through recommenders for user vector on data %s", thisvector.data.datapath)
+            recommenders = cargo.user_recommenders
+        elif helper.is_direct_subclass(thisvector, vg.ContentVector):
+            if Globals.verbose: Globals.logger.debug("Iterating through recommenders for content vector on data %s", thisvector.data.datapath)
+            recommenders = cargo.content_recommenders
+
+        # run all recommenders on the vector
+        for r in recommenders:
+            if Globals.verbose: Globals.logger.debug("Making recommendation %s on data %s", r, thisvector.data.datapath)
+            # TODO: implement other use case, ie. WithTfidf(), etc.
+            recommender = rg.RecommenderFactory().create_obj_recommender(r, thisvector)
+            # default use case
+            # recommender = RecommenderFactory().create_obj_recommender(r, vector, Default())
+            # with tf-idf use case 
             # recommender = RecommenderFactory().create_obj_recommender(r, vector, WithTfidf())
+            # without tf-idf use case
             # recommender = RecommenderFactory().create_obj_recommender(r, vector, WithoutTfidf())
             # etc.
             with Timer() as t:
-                cargo.vectors[i].prediction_vector = recommender.make_prediction()
+                thisvector.prediction_vector = recommender.make_prediction()
             if Globals.verbose: Globals.logger.debug("Making prediction takes %s seconds" % t.secs)
 
     newState = calculate_metrics_state

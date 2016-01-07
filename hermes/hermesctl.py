@@ -107,9 +107,12 @@ def extract_configs(configs_path, list_of_files_config_path, cargo):
             # [datasets] items will be placed into cargo in handle_dataset_section()
             return
         if section == "recommenders":
-            if item_key == "recommenders":
-                # add list of recommenders into cargo
-                cargo.recommenders.extend( json.loads(item_value) )
+            if item_key == "user_recommenders":
+                # add list of recommenders for user vectors into cargo
+                cargo.user_recommenders.extend( json.loads(item_value) )
+            elif item_key == "content_recommenders":
+                # add list of recommenders for content vectors into cargo
+                cargo.content_recommenders.extend( json.loads(item_value) )
             return
         if section == "metrics":
             if item_key == "metrics":
