@@ -352,11 +352,13 @@ class MyNewVectorType(Vector):
 
 Same explanation can be found in [Datasets Supported's section on Adding New Datasets](https://github.com/Lab41/hermes/tree/master/docs/data_supported.md#adding-new-datasets).
 
-Currently, adding new dataset will require you to append the logic (see template below) in hermes/hermes/modules/vectorgenerator.py. To make it easier for the user, in the future, every time you add a new dataset, you will need to create a new file. The template for supporting an additional dataset is shown below.
+Every time you add a new dataset, you will need to create a new file in hermes/hermes/modules/vectors. The template for supporting an additional dataset is shown below.
 
 Template: 
 
 ```bash
+from hermes.modules.vectorgenerator import UserVector, ContentVector
+
 class NewDataset(object):
     @classmethod
     def isSameDataInstance(cls, comparisonData):
