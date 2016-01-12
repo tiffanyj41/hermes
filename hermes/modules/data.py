@@ -1,13 +1,14 @@
 import helper 
-import vectorgenerator # TODO: avoid this?
+from hermesglobals import Globals
 
 # TODO: a better way of storing configuration from configuration file?
 class Data(object):
     """ Store configuration from configuration files. """
 
     def __init__(self, datapath, vector_transformation, schemapath, dataname):
-        if helper.is_filepath_valid(datapath): 
-            self.datapath = datapath
+        #if not helper.is_filepath_valid(datapath): 
+        #    raise OSError
+        self.datapath = datapath
         self.dataname = dataname
         self.vector_transformation = vector_transformation
         self.schema = helper.get_schema(schemapath) 
@@ -28,12 +29,12 @@ class Data(object):
 class UserVectorData(Data):
     def __init__(self, datapath, vector_transformation, schemapath, dataname):
         super(self.__class__, self).__init__(datapath, vector_transformation, schemapath, dataname)
-        self.which_vector = vectorgenerator.UserVector
+        self.which_vector = Globals.constants.USERVECTOR
 
 class ContentVectorData(Data):
     def __init__(self, datapath, vector_transformation, schemapath, dataname):
         super(self.__class__, self).__init__(datapath, vector_transformation, schemapath, dataname)
-        self.which_vector = vectorgenerator.ContentVector
+        self.which_vector = Globals.constants.CONTENTVECTOR
 
 
 

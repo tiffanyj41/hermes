@@ -10,7 +10,12 @@ from hermesglobals import Globals
 
 class VectorFactory(object):
     def create_vector(self, data, support_files):
-        vector = data.which_vector
+        # select which vector to create
+        vector = None
+        if data.which_vector == Globals.constants.USERVECTOR:
+            vector = UserVector
+        elif data.which_vector == Globals.constants.CONTENTVECTOR:
+            vector = ContentVector
         # get subclasses that inherit from either UserVector or ContentVector 
         # from modules in hermes/hermes/modules/vectors directory
         for module in helper.load_modules_in_dir(Globals.constants.DIR_VECTORS_PATH):
@@ -22,7 +27,12 @@ class VectorFactory(object):
                     raise ValueError
 
     def create_obj_vector(self, data, support_files):
-        vector = data.which_vector
+        # select which vector to create
+        vector = None
+        if data.which_vector == Globals.constants.USERVECTOR:
+            vector = UserVector
+        elif data.which_vector == Globals.constants.CONTENTVECTOR:
+            vector = ContentVector
         # get subclasses that inherit from either UserVector or ContentVector 
         # from modules in hermes/hermes/modules/vectors directory
         for module in helper.load_modules_in_dir(Globals.constants.DIR_VECTORS_PATH):
