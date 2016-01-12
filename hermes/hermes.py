@@ -57,7 +57,7 @@ def  __json_to_rdd(cargo):
 
         if Globals.verbose: Globals.logger.debug("Creating dataframe based on the content of the json file")
         datapath_in_hdfs = "hdfs://" + cargo.fs_default_ip_addr + "/" + cargo.hdfs_dir + "/" + os.path.basename(data.datapath)
-        data.set_dataframe(Globals.scsingleton, datapath_in_hdfs)
+        data.set_dataframe(Globals.scsingleton.sc, Globals.scsingleton.sqlCtx, datapath_in_hdfs)
 
         if Globals.verbose: Globals.logger.debug("Creating RDD based on the computed dataframe and configuration provided by the user")
         cargo.vectors.append( vg.VectorFactory().create_obj_vector(data, cargo.support_files) ) 

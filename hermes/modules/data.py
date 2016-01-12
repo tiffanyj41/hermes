@@ -15,12 +15,12 @@ class Data(object):
         self.dataframe = None
         # TODO: do we need to know from which config the data is from? 
 
-    def set_dataframe(self, scsingleton, datapath_in_hdfs):
-        self.dataframe = scsingleton.sqlCtx.read.json(datapath_in_hdfs, self.schema)
+    def set_dataframe(self, sc, sqlCtx, datapath_in_hdfs):
+        self.dataframe = sqlCtx.read.json(datapath_in_hdfs, self.schema)
         # explicitly repartition RDD after loading so that more tasks can run on it in parallel
         # by default, defaultMinPartitions == defaultParallelism == estimated # of cores across all of the machines in your cluster
         # TODO: a better way to go about the dataframe repartition?
-        self.dataframe = self.dataframe.repartition(scsingleton.sc.defaultParallelism * 3)
+        self.dataframe = self.dataframe.repartition(sc.defaultParallelism * 3)
 
         # set schema if it is not already set
         if self.schema is None: 
