@@ -7,6 +7,8 @@ import json
 import md5
 import os
 import traceback 
+import zipfile
+import zipimport
 
 from pyspark.sql.types import StructType
 
@@ -20,6 +22,23 @@ def get_schema(schema_path):
         return None
     with open(schema_path, "r") as schema_file:
         return StructType.fromJson(json.load(schema_file))
+
+def load_modules_in_zip(zipfile_path, which_dir):
+    try:
+        try:
+            zh = zipfile.ZipFile(zipfile_path)
+            zi = zipimport.zipimporter(zipfile_path)
+            for name in zh.namelist():
+                if os.path.basename(os.path.dirname(name)) == which_dir:
+                    module = zi.load_module(os.path.splitext(name)[0])
+                    yield module
+        finally:
+            try: zh.close()
+            except: pass
+    except Exception as err:
+        Globals.logger.error(err, exc_info=True)
+        raise
+
 
 def load_modules_in_dir(dir_path):
     try:

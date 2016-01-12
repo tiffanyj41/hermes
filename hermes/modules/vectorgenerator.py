@@ -9,16 +9,24 @@ from hermesglobals import Globals
 # ================================================================================
 
 class VectorFactory(object):
-    def create_vector(self, data, support_files):
+    def create_vector(self, data, support_files, runs_from_notebook=False):
         # select which vector to create
         vector = None
         if data.which_vector == Globals.constants.USERVECTOR:
             vector = UserVector
         elif data.which_vector == Globals.constants.CONTENTVECTOR:
             vector = ContentVector
+        else: 
+            raise Exception
+        # select if we are loading modules from a directory or a zip
+        generator = None
+        if runs_from_notebook:
+            generator = helper.load_modules_in_zip(Globals.constants.ROOT_PATH, Globals.constants.DIR_VECTORS_NAME)
+        else:
+            generator = helper.load_modules_in_dir(Globals.constants.DIR_VECTORS_PATH)
         # get subclasses that inherit from either UserVector or ContentVector 
         # from modules in hermes/hermes/modules/vectors directory
-        for module in helper.load_modules_in_dir(Globals.constants.DIR_VECTORS_PATH):
+        for module in generator:
             for subclass in helper.get_direct_subclasses(module, vector):
                 if subclass.isSameDataInstance(data):
                     return subclass(data, support_files).vector
@@ -26,19 +34,27 @@ class VectorFactory(object):
                     # cannot find class that builds the data
                     raise ValueError
 
-    def create_obj_vector(self, data, support_files):
+    def create_obj_vector(self, data, support_files, runs_from_notebook=False):
         # select which vector to create
         vector = None
         if data.which_vector == Globals.constants.USERVECTOR:
             vector = UserVector
         elif data.which_vector == Globals.constants.CONTENTVECTOR:
             vector = ContentVector
+        else: 
+            raise Exception
+        # select if we are loading modules from a directory or a zip
+        generator = None
+        if runs_from_notebook:
+            generator = helper.load_modules_in_zip(Globals.constants.ROOT_PATH, Globals.constants.DIR_VECTORS_NAME)
+        else:
+            generator = helper.load_modules_in_dir(Globals.constants.DIR_VECTORS_PATH)
         # get subclasses that inherit from either UserVector or ContentVector 
         # from modules in hermes/hermes/modules/vectors directory
-        for module in helper.load_modules_in_dir(Globals.constants.DIR_VECTORS_PATH):
+        for module in generator:
             for subclass in helper.get_direct_subclasses(module, vector):
                 if subclass.isSameDataInstance(data):
-                     return subclass(data, support_files)
+                    return subclass(data, support_files)
                 else:
                     # cannot find class that builds the data
                     raise ValueError
