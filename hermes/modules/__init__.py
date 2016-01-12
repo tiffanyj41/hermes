@@ -9,6 +9,10 @@ import singleton
 import statemachine
 import timer
 import vectorgenerator
-import vg
-import rg
+import vg.movielens_vectorgenerator
+import vg.wiki_vectorgenerator
+import rg.default_usecase
+import rg.interface
+import rg.with_tfidf_usecase
+import rg.without_tfidf_usecase
 import mg
