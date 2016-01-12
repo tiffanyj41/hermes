@@ -16,10 +16,8 @@ from modules.timer import Timer
 # TODO: empty certain items in cargo after no longer needed? 
 # TODO: when to use error_state? do try-catch for all states?
 
-def start_state(cargo):
-    """Start of the state machine. Create HDFS directory and upload the input data.
-    Returns: json_to_rdd_state as next state
-    """
+def __start(cargo):
+    """start_state without the state machine."""
 
     if Globals.verbose: Globals.logger.debug("In start_state:")
 
@@ -34,16 +32,21 @@ def start_state(cargo):
 
     load_json_files(cargo.datas)
 
+def start_state(cargo):
+    """Start of the state machine. Create HDFS directory and upload the input data.
+    Returns: json_to_rdd_state as next state
+    """
+
+    __start(cargo)
+
     newState = json_to_rdd_state
     if Globals.verbose: Globals.logger.debug("start_state -> json_to_rdd_state")
 
     return newState, cargo
 
 # TODO: make json_to_rdd_state, split_data_state, and make_prediction_state into one state?
-def json_to_rdd_state(cargo):
-    """Parse JSON to RDD. 
-    Returns: split_data_state as next state
-    """
+def  __json_to_rdd(cargo):
+    """json_to_rdd_state without the state macine."""
 
     if Globals.verbose: Globals.logger.debug("In json_to_rdd_state:")
 
@@ -57,24 +60,27 @@ def json_to_rdd_state(cargo):
         data.set_dataframe(Globals.scsingleton, datapath_in_hdfs)
 
         if Globals.verbose: Globals.logger.debug("Creating RDD based on the computed dataframe and configuration provided by the user")
-        # TODO: remove sqlCtx since it's global?
-        cargo.vectors.append( vg.VectorFactory().create_obj_vector(Globals.scsingleton.sqlCtx, data, cargo.support_files) ) 
-
+        cargo.vectors.append( vg.VectorFactory().create_obj_vector(data, cargo.support_files) ) 
 
     # TODO: clean cargo?
     # cargo.datas = []
     # cargo.hdfs_dir = None
     # cargo.fs_default_ip_addr = None
 
+def json_to_rdd_state(cargo):
+    """Parse JSON to RDD. 
+    Returns: split_data_state as next state
+    """
+
+    __json_to_rdd(cargo)
+
     newState = split_data_state
     if Globals.verbose: Globals.logger.debug("json_to_rdd_state -> split_data_state")
 
     return newState, cargo
 
-def split_data_state(cargo):
-    """Split data to train, test, and (optional) validate.
-    Returns: make_prediction_state as next state
-    """
+def __split_data(cargo):
+    """split_data_state without the state machine."""
 
     if Globals.verbose: Globals.logger.debug("In split_data_state:")
 
@@ -83,15 +89,20 @@ def split_data_state(cargo):
         weights, seed = hermesui._ask_user_for_split_percentage(vector.data.datapath)
         vector.split_data(weights, seed)
 
+def split_data_state(cargo):
+    """Split data to train, test, and (optional) validate.
+    Returns: make_prediction_state as next state
+    """
+
+    __split_data(cargo)
+
     newState = make_prediction_state
     if Globals.verbose: Globals.logger.debug("split_data_state -> make_prediction_state")
 
     return newState, cargo
 
-def make_prediction_state(cargo):
-    """Develop model based on the train data and make prediction based on this model. 
-    Returns: calculate_metrics_state as next state
-    """
+def __make_prediction(cargo):
+    """make_prediction_state without the state machine."""
 
     if Globals.verbose: Globals.logger.debug("In make_prediction_state:")   
 
@@ -123,22 +134,26 @@ def make_prediction_state(cargo):
                 thisvector.prediction_vector = recommender.make_prediction()
             if Globals.verbose: Globals.logger.debug("Making prediction takes %s seconds" % t.secs)
 
+def make_prediction_state(cargo):
+    """Develop model based on the train data and make prediction based on this model. 
+    Returns: calculate_metrics_state as next state
+    """
+
+    __make_prediction(cargo)
+
     newState = calculate_metrics_state
     if Globals.verbose: Globals.logger.debug("make_prediction_state -> calculate_metrics_state")
 
     return newState, cargo
 
-def calculate_metrics_state(cargo):
-    """Test the metrics specified by the user. This is an end state.
-    Returns: None because this is the last state
-    """
+def __calculate_metrics(cargo):
+    """calculate_metrics_state without the state machine."""
 
     if Globals.verbose: Globals.logger.debug("In calculate_metrics_state:")
 
     # create a metric executor
     executor = mg.MetricExecutor(mg.Metric())
 
-    # TODO: figure out why logger prints INFO twice
     for i in range(0, len(cargo.vectors)):
         Globals.logger.info("-" * 80)
         Globals.logger.info("Data: %s" % cargo.vectors[i].data.datapath)
@@ -152,6 +167,14 @@ def calculate_metrics_state(cargo):
                 Globals.logger.info("Metric: %s = %f" % (m, executor.execute(cargo.vectors[i])))
             if Globals.verbose: Globals.logger.debug("Calculating metric takes %s seconds" % t.secs)
         Globals.logger.info("-" * 80)
+
+def calculate_metrics_state(cargo):
+    """Test the metrics specified by the user. This is an end state.
+    Returns: None because this is the last state
+    """
+
+    __calculate_metrics(cargo)
+
     if Globals.verbose: Globals.logger.debug("calculate_metrics_state -> end_state")
 
     return
@@ -160,6 +183,7 @@ def error_state(cargo):
     """Error state. Print out the error messages. This is an end state.
     Returns: None because this is the last state
     """
+
     if Globals.verbose: Globals.logger.debug("In error_state:")
     Globals.logger.error("ERROR: " + cargo.error_msg)
     if Globals.verbose: Globals.logger.debug("error_state -> end_state")

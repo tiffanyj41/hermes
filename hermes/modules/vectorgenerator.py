@@ -9,26 +9,26 @@ from hermesglobals import Globals
 # ================================================================================
 
 class VectorFactory(object):
-    def create_vector(self, sqlCtx, data, support_files):
+    def create_vector(self, data, support_files):
         vector = data.which_vector
         # get subclasses that inherit from either UserVector or ContentVector 
         # from modules in hermes/hermes/modules/vectors directory
         for module in helper.load_modules_in_dir(Globals.constants.DIR_VECTORS_PATH):
             for subclass in helper.get_direct_subclasses(module, vector):
                 if subclass.isSameDataInstance(data):
-                    return subclass(sqlCtx, data, support_files).vector
+                    return subclass(data, support_files).vector
                 else:
                     # cannot find class that builds the data
                     raise ValueError
 
-    def create_obj_vector(self, sqlCtx, data, support_files):
+    def create_obj_vector(self, data, support_files):
         vector = data.which_vector
         # get subclasses that inherit from either UserVector or ContentVector 
         # from modules in hermes/hermes/modules/vectors directory
         for module in helper.load_modules_in_dir(Globals.constants.DIR_VECTORS_PATH):
             for subclass in helper.get_direct_subclasses(module, vector):
                 if subclass.isSameDataInstance(data):
-                    return subclass(sqlCtx, data, support_files)
+                     return subclass(data, support_files)
                 else:
                     # cannot find class that builds the data
                     raise ValueError
@@ -38,9 +38,7 @@ class VectorFactory(object):
 # ================================================================================
 
 class Vector(object):
-    def __init__(self, sqlCtx, data, support_files):
-        # TODO: remove sqlCtx because it is global?
-        self.sqlCtx = sqlCtx
+    def __init__(self, data, support_files):
         self.data = data
         self.support_files = support_files
         vector_transformation = getattr(self, data.vector_transformation)
@@ -48,6 +46,17 @@ class Vector(object):
             self.vector = None
         else:
             self.vector = vector_transformation()
+
+    def split_data(self, weights, seed):
+        raise NotImplemented
+
+# ================================================================================
+# User Vector and Content Vector Factory Objects
+# ================================================================================
+
+class UserVector(Vector):
+    def __init__(self, data, support_files):
+        super(UserVector, self).__init__(data, support_files)
         self.training_vector = None
         self.test_vector = None
         self.validation_vector = None
@@ -59,15 +68,11 @@ class Vector(object):
         self.test_vector = test_vector
         self.validation_vector = validation_vector
 
-# ================================================================================
-# User Vector and Content Vector Factory Objects
-# ================================================================================
-
-class UserVector(Vector):
-    pass
-
 class ContentVector(Vector):
-    pass
+    def __init__(self, data, support_files, user_vector):
+        super(ContentVector, self)._init__(data, support_files)
+        self.user_vector = user_vector
+
 
 # ================================================================================
 # User Vector and Content Vector for specific datasetes

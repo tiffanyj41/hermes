@@ -1,4 +1,5 @@
-from hermes.modules.vectorgenerator import UserVector, ContentVector
+from modules.vectorgenerator import UserVector, ContentVector
+from modules.hermesglobals import Globals
 
 # ================================================================================
 # MovieLens
