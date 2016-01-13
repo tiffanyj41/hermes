@@ -2,6 +2,7 @@
 
 * [Assumptions on Execution](#assumptions-on-execution)
 * [Assumptions on Vector Creation](#assumptions-on-vector-creation)
+* [Assumptions on Directory Creation](#assumptions-on-directory-creation)
 
 ## Assumptions on Execution
 
@@ -64,4 +65,6 @@ We have yet to determine why this is the case.
 When users add a new dataset, we cannot always assume that they will import exactly as "from hermes.modules.vectorgenerator import UserVector, ContentVector" because they can import it as "from modules.vectorgenerator import UserVector, ContentVector" since it is valid. For this reason, we have made an assumption that if the parent class of the MovieLensUserVector, for example, has the __name__ UserVector, MovieLensUserVector is the child of UserVector. The problem of this assummption is that if MovieLensUserVector inherits multiple parents from different module with the same class name, it can become a problem as it will treat both parents with the same class name as the same. 
 
 
+## Assumptions on Directory Creation
 
+We made an assumption that there is only one directory with the label "vg", "rg", and "mg". These directories store the modules for vector, recommender, and metric creation specific to either datasets or use cases. The assumption is made in the helper function load_modules_in_zip() where it checks for the base directory of the file path if the base directory is  "vg", "rg", or "mg" to load the modules in the notebook during vector, recommender, or metric creation respectively. 
