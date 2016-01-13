@@ -131,7 +131,7 @@ def __make_prediction(cargo):
             # recommender = RecommenderFactory().create_obj_recommender(r, vector, WithoutTfidf())
             # etc.
             with Timer() as t:
-                thisvector.prediction_vector = recommender.make_prediction()
+                prediction_vector = recommender.make_prediction()
             if Globals.verbose: Globals.logger.debug("Making prediction takes %s seconds" % t.secs)
 
 def make_prediction_state(cargo):

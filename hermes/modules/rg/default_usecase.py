@@ -1,6 +1,6 @@
 from interface import ImplementationInterface
 
-import hermes.metrics.cf as cf
+import hermes.algorithms.cf as cf
 
 # ================================================================================
 # Concrete background implementations for default use cases
