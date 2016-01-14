@@ -111,18 +111,23 @@ def __make_prediction(cargo):
 
         # select which recommenders based on the vector type
         recommenders = None
+        thisvector_uservector = None
+        thisvector_contentvector = None
         if helper.is_direct_subclass(thisvector, vg.UserVector):
             if Globals.verbose: Globals.logger.debug("Iterating through recommenders for user vector on data %s", thisvector.data.datapath)
+            thisvector_uservector = thisvector
             recommenders = cargo.user_recommenders
         elif helper.is_direct_subclass(thisvector, vg.ContentVector):
             if Globals.verbose: Globals.logger.debug("Iterating through recommenders for content vector on data %s", thisvector.data.datapath)
+            thisvector_contentvector = thisvector
+            thisvector_uservector = thisvector.uservector
             recommenders = cargo.content_recommenders
 
         # run all recommenders on the vector
         for r in recommenders:
             if Globals.verbose: Globals.logger.debug("Making recommendation %s on data %s", r, thisvector.data.datapath)
             # TODO: implement other use case, ie. WithTfidf(), etc.
-            recommender = rg.RecommenderFactory().create_obj_recommender(r, thisvector)
+            recommender = rg.RecommenderFactory().create_obj_recommender(r, thisvector_uservector, thisvector_contentvector)
             # default use case
             # recommender = RecommenderFactory().create_obj_recommender(r, vector, Default())
             # with tf-idf use case 
@@ -158,8 +163,10 @@ def __calculate_metrics(cargo):
         Globals.logger.info("-" * 80)
         Globals.logger.info("Data: %s" % cargo.vectors[i].data.datapath)
         for m in cargo.metrics:
+            Globals.logger.info("Metric: %s" % (m))
             # check if metric exists
             metric = mg.MetricFactory().create_obj_metric(m)
+            Globals.logger.info(metric)
             # set metric in executor
             executor.change_metric(metric)
             # execute the metric

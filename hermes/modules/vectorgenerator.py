@@ -95,9 +95,14 @@ class UserVector(Vector):
         self.validation_vector = validation_vector
 
 class ContentVector(Vector):
-    def __init__(self, data, support_files, user_vector):
-        super(ContentVector, self)._init__(data, support_files)
-        self.user_vector = user_vector
+    def __init__(self, data, support_files, uservector=None, runs_from_notebook=False):
+        super(ContentVector, self).__init__(data, support_files)
+        # TODO: terrible, quick fix -> fix it for real in the future
+        if uservector is not None:
+            self.uservector = uservector
+        else:
+            self.uservector = VectorFactory().create_obj_vector(self.data.uservectordata, support_files, runs_from_notebook)
+
 
 
 # ================================================================================

@@ -145,22 +145,30 @@ def extract_configs(configs_path, list_of_files_config_path, cargo):
         dataname = datasets_items["dataname"]
         lofmap = config.map_section(lofcp, dataname)
 
-        # create UserVectorData or ContentVectorData or both
         hasUserVector = False
         # check it has the required items to build a UserVectorData
         if set(config.REQ_UV_HEADINGS) < set(datasets_items.keys()): 
             hasUserVector = True
-            create_datas(lofmap, dataname, datasets_items, config_path, isUserVector=True)
 
         hasContentVector = False 
         # check it has the required items to build a ContentVectorData
         if set(config.REQ_CV_HEADINGS) < set(datasets_items.keys()):
             hasContentVector = True
-            create_datas(lofmap, dataname, datasets_items, config_path, isUserVector=False)
 
-        if not hasUserVector and not hasContentVector:
+        if not hasContentVector and not hasUserVector:
             Globals.logger.error("ERROR: config " + config_path + " does not have declaration for a user vector or a content vector")
             sys.exit()  
+
+        if hasContentVector and not hasUserVector:
+            Globals.logger.error("ERROR: config " + config_path + " does not have declaration for a user vector when a content vector is declared")
+            sys.exit()  
+
+        if hasContentVector and hasUserVector:
+            # create content vector data
+            create_datas(lofmap, dataname, datasets_items, config_path, isUserVector=False)
+        else:
+            # create user vector data
+            create_datas(lofmap, dataname, datasets_items, config_path, isUserVector=True)
 
     def create_datas(lofmap, dataname, datasets_items, config_path, isUserVector):
         """ Helper function that creates a UserVectorData or ContentVectorData depending if it isUserVector or not. 
@@ -170,48 +178,105 @@ def extract_configs(configs_path, list_of_files_config_path, cargo):
         cargo's data list.
         """
 
+        # TODO: rewrite this, quick fix for now
         if isUserVector:
             datapaths_heading = "user_vector_data"
             vector_transformations_heading = "user_vector_transformations"
             schemapaths_heading = "user_vector_schemas"
-        else:
-            datapaths_heading = "content_vector_data"
-            vector_transformations_heading = "content_vector_transformations"
-            schemapaths_heading = "content_vector_schemas"
 
-        datapaths = json.loads(datasets_items[datapaths_heading])
-        vector_transformations = json.loads(datasets_items[vector_transformations_heading])
-        hasSchemas = False
-        if schemapaths_heading in datasets_items.keys():
-            schemapaths = json.loads(datasets_items[schemapaths_heading])
-            hasSchemas = True
+            datapaths = json.loads(datasets_items[datapaths_heading])
+            vector_transformations = json.loads(datasets_items[vector_transformations_heading])
+            hasSchemas = False
+            if schemapaths_heading in datasets_items.keys():
+                schemapaths = json.loads(datasets_items[schemapaths_heading])
+                hasSchemas = True
 
-        # check that a vector transformation is specified for each data
-        # TODO: multiple vector trasnformation for each data in the future?
-        if len(datapaths) != len(vector_transformations):
-            Globals.logger.error("ERROR: must specify a vector type for each data in config " + config_path)
-            sys.exit()
-
-        for i in range(0, len(datapaths)):
-            # set datapath
-            try:
-                datapath = lofmap[datapaths[i]]
-            except KeyError:
-                Globals.logger.error("ERROR: cannot find data " + datapath + " in the list_of_files_config for config " + config_path)
+            # check that a vector transformation is specified for each data
+            # TODO: multiple vector trasnformation for each data in the future?
+            if len(datapaths) != len(vector_transformations):
+                Globals.logger.error("ERROR: must specify a vector type for each data in config " + config_path)
                 sys.exit()
-            # set vector_transformation
-            vector_transformation = vector_transformations[i]
-            # set schemapath
-            try:
-                if hasSchemas: schemapath = lofmap[schemapaths[i]]
-            except IndexError, KeyError:
-                schemapath = None
 
-            if isUserVector: 
+            for i in range(0, len(datapaths)):
+                # set datapath
+                try:
+                    datapath = lofmap[datapaths[i]]
+                except KeyError:
+                    Globals.logger.error("ERROR: cannot find data " + datapath + " in the list_of_files_config for config " + config_path)
+                    sys.exit()
+                # set vector_transformation
+                vector_transformation = vector_transformations[i]
+                # set schemapath
+                try:
+                    if hasSchemas: schemapath = lofmap[schemapaths[i]]
+                except IndexError, KeyError:
+                    schemapath = None
+
                 uservectordata = UserVectorData(datapath, vector_transformation, schemapath, dataname)
                 cargo.datas.append(uservectordata)
-            else:
-                contentvectordata = ContentVectorData(datapath, vector_transformation, schemapath, dataname)
+
+        else: 
+            # user vector
+            uv_datapaths_heading = "user_vector_data"
+            uv_vector_transformations_heading = "user_vector_transformations"
+            uv_schemapaths_heading = "user_vector_schemas"
+            
+            uv_datapaths = json.loads(datasets_items[uv_datapaths_heading])
+            uv_vector_transformations = json.loads(datasets_items[uv_vector_transformations_heading])
+            uv_hasSchemas = False
+            if uv_schemapaths_heading in datasets_items.keys():
+                uv_schemapaths = json.loads(datasets_items[uv_schemapaths_heading])
+                uv_hasSchemas = True
+
+            # content vector
+            cv_datapaths_heading = "content_vector_data"
+            cv_vector_transformations_heading = "content_vector_transformations"
+            cv_schemapaths_heading = "content_vector_schemas"
+
+            cv_datapaths = json.loads(datasets_items[cv_datapaths_heading])
+            cv_vector_transformations = json.loads(datasets_items[cv_vector_transformations_heading])
+            cv_hasSchemas = False
+            if cv_schemapaths_heading in datasets_items.keys():
+                cv_schemapaths = json.loads(datasets_items[cv_schemapaths_heading])
+                cv_hasSchemas = True
+
+            # check that a vector transformation is specified for each data
+            # TODO: multiple vector trasnformation for each data in the future?
+            if len(cv_datapaths) != len(cv_vector_transformations) or len(uv_datapaths) != len(uv_vector_transformations):
+                Globals.logger.error("ERROR: must specify a vector type for each data in config " + config_path)
+                sys.exit()
+
+            if len(cv_datapaths) != len(uv_datapaths):
+                Globals.logger.error("ERROR: content vector must have a corresponding user vector")
+                sys.exit()
+
+            for i in range(0, len(cv_datapaths)):
+                # set datapath
+                try:
+                    cv_datapath = lofmap[cv_datapaths[i]]
+                except KeyError:
+                    Globals.logger.error("ERROR: cannot find data " + cv_datapath + " in the list_of_files_config for config " + config_path)
+                    sys.exit()
+                try:
+                    uv_datapath = lofmap[uv_datapaths[i]]
+                except KeyError:
+                    Globals.logger.error("ERROR: cannot find data " + uv_datapath + " in the list_of_files_config for config " + config_path)
+                    sys.exit()
+                # set vector_transformation
+                cv_vector_transformation = cv_vector_transformations[i]
+                uv_vector_transformation = uv_vector_transformations[i]
+                # set schemapath
+                try:
+                    if cv_hasSchemas: cv_schemapath = lofmap[cv_schemapaths[i]]
+                except IndexError, KeyError:
+                    cv_schemapath = None
+                try:
+                    if uv_hasSchemas: uv_schemapath = lofmap[uv_schemapaths[i]]
+                except IndexError, KeyError:
+                    uv_schemapath = None
+
+                uservectordata = UserVectorData(uv_datapath, uv_vector_transformation, uv_schemapath, dataname)
+                contentvectordata = ContentVectorData(cv_datapath, cv_vector_transformation, cv_schemapath, dataname, uservectordata)
                 cargo.datas.append(contentvectordata)
 
     # extract configs

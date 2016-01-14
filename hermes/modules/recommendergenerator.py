@@ -30,8 +30,9 @@ from rg.default_usecase import Default
 # ================================================================================
 
 class Recommender(object):
-    def __init__(self, vector, implementation=Default()):
-        self.vector = vector
+    def __init__(self, user_vector, content_vector=None, implementation=Default()):
+        self.user_vector = user_vector
+        self.content_vector = content_vector
         self.implementation = implementation
 
     def make_prediction(self):
@@ -43,13 +44,13 @@ class Recommender(object):
 # ================================================================================
 
 class RecommenderFactory(object):
-    def create_obj_recommender(self, recommender_str, vector, implementation=Default()):
+    def create_obj_recommender(self, recommender_str, user_vector, content_vector=None, implementation=Default()):
         which_recommender = getattr(sys.modules[__name__], recommender_str)
         if not which_recommender:
             # cannot find class
             raise ValueError
         else:
-            return which_recommender(vector, implementation)
+            return which_recommender(user_vector, content_vector, implementation)
 
 
 # ================================================================================
@@ -58,9 +59,16 @@ class RecommenderFactory(object):
 
 class ALS(Recommender):
     def make_prediction(self):
-        return self.implementation.make_prediction_with_als(self.vector)
+        return self.implementation.make_prediction_with_als(self.user_vector, self.content_vector)
 
 class CBWithKMeans(Recommender):
     def make_prediction(self):
-        return self.implementation.make_prediction_with_cbkmeans(self.vector)
+        return self.implementation.make_prediction_with_cbkmeans(self.user_vector, self.content_vector)
 
+class UserUser(Recommender):
+    def make_prediction(self):
+        return self.implementation.make_prediction_with_useruser(self.user_vector, self.content_vector)
+
+class ItemItem(Recommender):
+    def make_prediction(self):
+        return self.implementation.make_prediction_with_itemitem(self.user_vector, self.content_vector)

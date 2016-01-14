@@ -32,9 +32,10 @@ class UserVectorData(Data):
         self.which_vector = Globals.constants.USERVECTOR
 
 class ContentVectorData(Data):
-    def __init__(self, datapath, vector_transformation, schemapath, dataname):
+    def __init__(self, datapath, vector_transformation, schemapath, dataname, uservectordata):
         super(self.__class__, self).__init__(datapath, vector_transformation, schemapath, dataname)
         self.which_vector = Globals.constants.CONTENTVECTOR
+        self.uservectordata = uservectordata
 
 
 
