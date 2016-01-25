@@ -13,47 +13,47 @@
   1. Download 
   2. Double click on .dmg file to install.
   3. In a terminal, type java -version. You should see the following: 
-```bash
-java version "1.8.0_65"
-Java(TM) SE Runtime Environment (build 1.8.0_65-b17)
-Java HotSpot(TM) 64-Bit Server VM (build 25.65-b01, mixed mode)
-```
+ ```bash
+ java version "1.8.0_65"
+ Java(TM) SE Runtime Environment (build 1.8.0_65-b17)
+ Java HotSpot(TM) 64-Bit Server VM (build 25.65-b01, mixed mode)
+ ```
 2. Set JAVA_HOME
-```bash
-export JAVA_HOME=$(/usr/libexec/java_home)
-```
+ ```bash
+ export JAVA_HOME=$(/usr/libexec/java_home)
+ ```
 
 3. Install Homebrew
-```bash
-$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
-```
+ ```bash
+ $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
+ ```
 
 4. Install Scala
-```
-$ brew install scala
-```
+ ```
+ $ brew install scala
+ ```
 
 5. Download Spark from https://spark.apache.org/downloads.html. 
 
 6. Set SCALA_HOME and SPARK_HOME and export it to path in your .bash_profile.
-```bash
-export SPARK_HOME=/path/to/your/spark
-export PATH=$PATH:$SPARK_HOME/bin
-export SCALA_HOME=/path/to/your/scala
-export PATH=$PATH:$SCALA_HOME/bin
-```
+ ```bash
+ export SPARK_HOME=/path/to/your/spark
+ export PATH=$PATH:$SPARK_HOME/bin
+ export SCALA_HOME=/path/to/your/scala
+ export PATH=$PATH:$SCALA_HOME/bin
+ ```
 
 7. Export PySpark classes to the Python path after you have installed Python.
-```bash
-export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH
-```
+ ```bash
+ export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH
+ ```
 
 8. Build and install Apache Spark
-```bash
-$ brew install sbt
-$ cd $SPARK_HOME
-$ sbt/sbt clean assembly
-```
+ ```bash
+ $ brew install sbt
+ $ cd $SPARK_HOME
+ $ sbt/sbt clean assembly
+ ```
 
 ### Installing Hadoop  
 Please follow this [guide](http://zhongyaonan.com/hadoop-tutorial/setting-up-hadoop-2-6-on-mac-osx-yosemite.html).
