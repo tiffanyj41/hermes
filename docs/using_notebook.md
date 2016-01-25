@@ -4,7 +4,26 @@
 2. Launch Anaconda luncher
 3. Launch ipython-notebook
 4. Create an iPython profile for use with PySpark
+  1. Make sure you have exported PySpark classes to your python path and build Apache Spark. 
+     To export PySpark classes, add the following to your ~/.bash_profile:
 
+     ```bash
+     # export spark to path
+     export SPARK_HOME=/path/to/your/spark
+     export PATH=$PATH:$SPARK_HOME/bin
+     # export pyspark classes to the python path
+     export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH
+     # export py4j to the python path
+     export PYTHONPATH=$SPARK_HOME/python/lib/py4j-<version_number>-src.zip:$PYTHONPATH
+     ```
+     
+  2. Build Apache Spark
+  
+     ```bash
+    $ cd $SPARK_HOME
+    $ sbt/sbt clean assembly
+     ```
+     
  ```bash
 ipython profile create pyspark
  ```
