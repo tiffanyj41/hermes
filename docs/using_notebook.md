@@ -4,12 +4,14 @@
 2. Launch Anaconda luncher
 3. Launch ipython-notebook
 4. Create an iPython profile for use with PySpark
+
  ```bash
- ipython profile create pyspark
+ipython profile create pyspark
  ```
 5. Create a iPython notebook configuration
+
  ```bash
- vim ~/.ipython/profile_pyspark/ipython_notebook_config.py
+vim ~/.ipython/profile_pyspark/ipython_notebook_config.py
  ```
  ```bash
  c = get_config()
