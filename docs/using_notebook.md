@@ -1,8 +1,8 @@
 # How to use iPython Notebook
 
 1. Install Anaconda
-2. Launch Anaconda luncher
-3. Launch ipython-notebook
+2. Launch Anaconda launcher
+3. Launch ipython-notebook 
 4. Create an iPython profile for use with PySpark
   1. Make sure you have exported PySpark classes to your python path and build Apache Spark. 
      To export PySpark classes, add the following to your ~/.bash_profile:
@@ -34,9 +34,21 @@ vim ~/.ipython/profile_pyspark/ipython_notebook_config.py
  ```
  ```bash
  c = get_config()
- c.NotebookApp.ip = '*'
- c.NotebookApp.open_browser = False
- c.NotebookApp.port = 8880
+ 
+ # kernel configuration
+ c.IPKernelApp.pylab = 'inline'  # set %matplotlib inline always
+ 
+ # notebook configuration
+ c.NotebookApp.ip = '*' # '*' == to bind on all IPs
+ # do not open the browser at start of ipython notebook
+ # so that we can point the ipython notebook address
+ # in an active web browser
+ c.NotebookApp.open_browser = False 
+ 
+ # (optional) you can add password to your notebook if desired
+ 
+ # set a fixed port number that does not conflict with other iPython profiles
+ c.NotebookApp.port = 8880 
  ```
 6. Create PySpark Setup configuration
  ```bash
@@ -50,6 +62,10 @@ vim ~/.ipython/profile_pyspark/ipython_notebook_config.py
  # setup spark home
  findspark.init()
  spark_home = findspark.find()
+ 
+ # setup spark home approach #2
+ # make sure you have already set $SPARK_HOME in $PATH
+ # spark_home = os.environ.get('SPARK_HOME', None)
 
  # add spark's home directory to path
  sys.path.insert(0, os.path.join(spark_home, "python")) 
@@ -72,8 +88,11 @@ vim ~/.ipython/profile_pyspark/ipython_notebook_config.py
  from pyspark.sql import SQLContext 
  
  # setup SparkContext
- sc = SparkContext._active_spark_context
- 
+ try:
+     sc = SparkContext()
+ except:
+     sc = SparkContext._active_spark_context
+
  # setup SQLContext
  sqlCtx = SQLContext(sc)
  ```
