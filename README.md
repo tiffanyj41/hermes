@@ -23,6 +23,9 @@ For a detailed installation guide, please read on [Hermes Installation Guide](ht
 * Hadoop 2.7.1
 * virtualenv
 
+### Warning:
+We have dropped working on Hermes for the command line because the team has decided to pursue running Hermes on the Spark's iPython Notebook instead.
+
 ### How to Install Hermes: 
 
 (Optional) After you have installed the dependencies, if you have different projects that require different Python environment, you can use a Virtual Environment. As listed in the Virtual Environment's [site](http://docs.python-guide.org/en/latest/dev/virtualenvs/), "a Virtual Environment is a tool to keep the dependencies required by different projects in separate places, by creating virtual Python environments for them."
