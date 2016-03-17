@@ -4,6 +4,7 @@ import imp
 import numpy as np
 import os
 import re
+from nltk import PorterStemmer
 from pyspark.mllib.feature import Word2Vec
 
 # =============================================================================
@@ -164,6 +165,13 @@ def get_docstring(((repo_name, file_path), file_lines)):
         
     return ((repo_name, file_path), docstring)
 
+def clean_string(string):
+    # 1. remove special characters and punctuation 
+    #    by only extracting alphanumeric words
+    # 2. lowercase all words
+    # 3. stem the words, ie "talk" and "talking" should both be treated as "talk"
+    return re.sub("[^\w]", " ", PorterStemmer().stem_word(string.lower()))
+
 # =============================================================================
 # Py2VecModel 
 # takes in the dataframe of the JSON file and the setting of Word2Vec
@@ -290,5 +298,5 @@ class Py2VecDocstringModel(Py2VecModel):
         output: wordstrings == [[word1, word2, ..., wordn]]
         """
         docstrings = self.__get_docstrings()
-        wordstrings = docstrings.map(lambda docstring: re.sub("[^\w]", " ", docstring).split())
+        wordstrings = docstrings.map(lambda docstring: clean_string(docstring).split())
         return wordstrings
